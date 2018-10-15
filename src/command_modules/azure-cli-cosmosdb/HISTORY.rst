@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.3
++++++
+* `cosmosdb`: Add `keys list` support.
+
 0.2.2
 +++++
 * `cosmosdb create`: Add `--enable-multiple-write-locations` support.

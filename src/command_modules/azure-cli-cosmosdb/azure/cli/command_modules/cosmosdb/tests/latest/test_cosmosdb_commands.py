@@ -97,6 +97,13 @@ class CosmosDBTests(ScenarioTest):
         assert 'secondaryMasterKey' in original_keys
         assert 'secondaryReadonlyMasterKey' in original_keys
 
+        keys_list2 = self.cmd('az cosmosdb keys list -n {acc} -g {rg}').get_output_in_json()
+        
+        assert original_keys["primaryMasterKey"] == keys_list2["primaryMasterKey"]
+        assert original_keys["primaryReadonlyMasterKey"] == keys_list2["primaryReadonlyMasterKey"]
+        assert original_keys["secondaryMasterKey"] == keys_list2["secondaryMasterKey"]
+        assert original_keys["secondaryReadonlyMasterKey"] == keys_list2["secondaryReadonlyMasterKey"]
+
         self.cmd('az cosmosdb regenerate-key -n {acc} -g {rg} --key-kind primary')
         self.cmd('az cosmosdb regenerate-key -n {acc} -g {rg} --key-kind primaryReadonly')
         self.cmd('az cosmosdb regenerate-key -n {acc} -g {rg} --key-kind secondary')
@@ -171,3 +178,4 @@ class CosmosDBTests(ScenarioTest):
             self.check('enableMultipleWriteLocations', True),
             self.check('consistencyPolicy.defaultConsistencyLevel', 'ConsistentPrefix'),
         ]).get_output_in_json()
+       

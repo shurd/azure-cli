@@ -57,6 +57,11 @@ helps['cosmosdb list-keys'] = """
     short-summary: List the access keys for a Azure Cosmos DB database account.
 """
 
+helps['cosmosdb keys list'] = """
+    type: command
+    short-summary: List the access keys for a Azure Cosmos DB database account.
+"""
+
 helps['cosmosdb list-read-only-keys'] = """
     type: command
     short-summary: List the read-only access keys for a Azure Cosmos DB database account.
