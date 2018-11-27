@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.6
++++++
+* `keys list` now lists keys and other minor fixes
+
 0.2.5
 +++++
 * Use latest azure-mgmt-cosmosdb pypi package (0.5.2)

@@ -97,6 +97,12 @@ class CosmosDBTests(ScenarioTest):
         assert 'secondaryMasterKey' in original_keys
         assert 'secondaryReadonlyMasterKey' in original_keys
 
+        original_keys_second_command = self.cmd('az cosmosdb keys list -n {acc} -g {rg}').get_output_in_json()
+        assert 'primaryMasterKey' in original_keys_second_command
+        assert 'primaryReadonlyMasterKey' in original_keys_second_command
+        assert 'secondaryMasterKey' in original_keys_second_command
+        assert 'secondaryReadonlyMasterKey' in original_keys_second_command
+
         self.cmd('az cosmosdb regenerate-key -n {acc} -g {rg} --key-kind primary')
         self.cmd('az cosmosdb regenerate-key -n {acc} -g {rg} --key-kind primaryReadonly')
         self.cmd('az cosmosdb regenerate-key -n {acc} -g {rg} --key-kind secondary')
@@ -171,3 +177,23 @@ class CosmosDBTests(ScenarioTest):
             self.check('enableMultipleWriteLocations', True),
             self.check('consistencyPolicy.defaultConsistencyLevel', 'ConsistentPrefix'),
         ]).get_output_in_json()
+
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_account')
+    def test_list_databases(self, resource_group):
+
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='cli', length=40)
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg}')
+        keys = self.cmd('az cosmosdb list-keys -n {acc} -g {rg}').get_output_in_json()
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+
+        self.kwargs.update({
+            'primary_master_key': keys["primaryMasterKey"],
+            'url': account['documentEndpoint']
+        })
+        
+        self.cmd('az cosmosdb database list -n {acc} -g {rg}')
+        self.cmd('az cosmosdb database list -n {acc} --key {primary_master_key}')
+        self.cmd('az cosmosdb database list --url-connection {url} --key {primary_master_key}')
